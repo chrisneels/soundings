@@ -83,14 +83,13 @@ export function AboutScreen(props: { onBack: () => void }) {
     <div className="screen">
       <div className="wordmark">soundings</div>
       <p className="about-text">
-        Soundings is a generative listening instrument. Nothing is
-        pre-recorded. Each performance is composed as it plays — drawn from a
-        small lattice of pure intervals, tuned to the intention you choose —
-        so no two are ever fully alike. Every performance is bounded. It
-        begins with a single bell, holds for the time you set, and decays into
-        silence. The listener has the option to retain the score: a short code
-        that they can keep, or hand to someone, so the performance can be heard
-        again.
+        Soundings is a generative listening instrument for cultivated attention.
+        Choose an intention — settle, focus, rest, tend, wander, or wait — and
+        it composes a performance in the moment to meet it: drawn from a small
+        lattice of pure intervals, never pre-recorded, never the same twice.
+        Each piece opens with a bell, holds for as long as you ask, then
+        returns to silence. What remains is the score — a short code to keep or
+        to give, so the piece can be performed again.
       </p>
       <button className="quiet-link" onClick={props.onBack}>
         Return
