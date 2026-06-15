@@ -68,6 +68,8 @@ export class Performance {
   private disposed = false;
   /** At most one interior listens at a time (one performance, one screen). */
   private soundListener: ((e: SoundEvent) => void) | null = null;
+  /** Resumes the audio context when the tab returns to the foreground. */
+  private onVisibility: (() => void) | null = null;
 
   // audio graph
   private bus!: Tone.Gain;
@@ -125,6 +127,19 @@ export class Performance {
     this.begun = true;
 
     setSeed(this.score.seed);
+
+    // iOS Safari 16.4+: declare a "playback" audio session so sound comes out
+    // the SPEAKER even with the hardware mute switch on (the default session
+    // is muted by that switch — which is why headphones work but the iPhone
+    // speaker doesn't), and so the audio is treated as media (better
+    // backgrounding). A no-op on browsers without the API.
+    try {
+      const a = (navigator as unknown as { audioSession?: { type: string } }).audioSession;
+      if (a) a.type = 'playback';
+    } catch {
+      // unsupported — ignore
+    }
+
     await Tone.start();
 
     // Master chain: layers → threshold fade → Reverb(10 s, wet .45)
@@ -232,6 +247,13 @@ export class Performance {
         this.startEnding(FULL_ENDING);
       }, Math.max(startAt, THRESHOLD_S));
     }
+
+    // Coming back from a locked screen or an app switch leaves the audio
+    // context suspended; resume it on return so the piece carries on.
+    this.onVisibility = () => {
+      if (!document.hidden) void Tone.getContext().resume();
+    };
+    document.addEventListener('visibilitychange', this.onVisibility);
   }
 
   /** Density −15% per press, floored — never to zero: the floor keeps a
@@ -315,6 +337,10 @@ export class Performance {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    if (this.onVisibility) {
+      document.removeEventListener('visibilitychange', this.onVisibility);
+      this.onVisibility = null;
+    }
     Tone.Transport.stop();
     Tone.Transport.cancel(0);
     this.pads?.dispose();

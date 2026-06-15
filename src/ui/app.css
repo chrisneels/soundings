@@ -103,7 +103,6 @@ a:focus-visible {
   transition: color var(--fade);
 }
 
-.option:hover,
 .option[aria-checked='true'] {
   color: var(--ink);
 }
@@ -123,7 +122,6 @@ a:focus-visible {
   letter-spacing: 0.01em;
 }
 
-.option-with-sub:hover .option-subtitle,
 .option-with-sub[aria-checked='true'] .option-subtitle {
   color: var(--accent);
 }
@@ -148,10 +146,6 @@ a:focus-visible {
   transition: border-color var(--fade), color var(--fade);
 }
 
-.cta:hover {
-  border-color: var(--accent);
-}
-
 /* secondary entries — quiet, stacked, lowercase, set apart so they never
    compete with Begin */
 .entry-secondary {
@@ -168,10 +162,6 @@ a:focus-visible {
   color: var(--ink-dim);
   letter-spacing: 0.04em;
   transition: color var(--fade);
-}
-
-.quiet-link:hover {
-  color: var(--accent);
 }
 
 .small-note {
@@ -201,8 +191,24 @@ a:focus-visible {
   transition: border-color var(--fade);
 }
 
-.begin:hover {
-  border-color: var(--accent);
+/* Hover effects only where a real pointer exists — never on touch, where
+   :hover would stick after a tap (e.g. an intention staying highlighted). */
+@media (hover: hover) {
+  .option:hover {
+    color: var(--ink);
+  }
+  .option-with-sub:hover .option-subtitle {
+    color: var(--accent);
+  }
+  .cta:hover {
+    border-color: var(--accent);
+  }
+  .quiet-link:hover {
+    color: var(--accent);
+  }
+  .begin:hover {
+    border-color: var(--accent);
+  }
 }
 
 /* ---- performing ----------------------------------------------------- */

@@ -164,12 +164,17 @@ export function Field(props: Props) {
       ctx.fillStyle = `rgb(${bg[0]},${bg[1]},${bg[2]})`;
       ctx.fillRect(0, 0, W, H);
 
+      // desktop reads fainter than mobile — lift the whole field's presence
+      // there (mobile keeps boost 1)
+      const ceilB = ceiling * (W >= f.desktopMinWidth ? f.desktopBoost : 1);
+
       // the pool — a soft radial of less-dark, no traceable edge
-      const col = poolColor(bg, char, tide, ceiling);
+      const col = poolColor(bg, char, tide, ceilB);
       const maxDim = Math.max(W, H);
       const radiusFrac =
         lerp(f.poolRadiusFrac, f.performRadiusFrac, cond) + tide * f.poolRadiusTide * ceiling;
-      const radius = Math.max(1, radiusFrac * maxDim);
+      // cap the radius so wide screens get a concentrated glow, not a flat wash
+      const radius = Math.max(1, Math.min(radiusFrac * maxDim, f.poolRadiusMaxPx));
       const driftScale = ceiling * (1 - cond * 0.8); // condenses + stills as it recedes
       const cx = (0.5 + drift.x * f.poolDriftFrac.x * driftScale) * W;
       const cy = (lerp(f.poolCenterY, f.performCenterY, cond) + drift.y * f.poolDriftFrac.y * driftScale) * H;
@@ -183,7 +188,7 @@ export function Field(props: Props) {
       // speed, amount set by the room's grain. Material + dither + motion.
       const pattern = patterns[grainTileIndex(now, f.grainShimmerHz * char.speed, patterns.length)];
       if (pattern) {
-        ctx.globalAlpha = grainGlobalAlpha(tide, char.grain, ceiling);
+        ctx.globalAlpha = grainGlobalAlpha(tide, char.grain, ceilB);
         ctx.fillStyle = pattern;
         ctx.fillRect(0, 0, W, H);
         ctx.globalAlpha = 1;

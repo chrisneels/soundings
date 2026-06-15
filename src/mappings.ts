@@ -445,6 +445,15 @@ export const VISUALS = {
     /** While performing the pool condenses toward the ring (screen centre). */
     performRadiusFrac: 0.34,
     performCenterY: 0.48,
+    /** Cap the pool radius (px) so on wide screens it stays a concentrated
+     *  glow with dark edges, instead of ballooning into a flat wash. Mobile
+     *  pools are smaller than this, so they're unaffected. */
+    poolRadiusMaxPx: 700,
+    /** Desktop reads fainter than mobile (lower pixel density, more distance,
+     *  bigger viewport). At/above this width, lift the whole field's presence
+     *  — mobile already reads well, so it keeps boost 1. */
+    desktopMinWidth: 900,
+    desktopBoost: 1.6,
 
     /** Grain — 1px speckle, load-bearing: makes the dark read as material
      *  and dithers the pool so it can't band. Several noise tiles are built
