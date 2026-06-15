@@ -5,3 +5,6 @@ dist
 npm-debug.log*
 .DS_Store
 .vscode
+
+# heavy source art kept locally; only the optimized public/og.jpg ships
+*-uncompressed.*
