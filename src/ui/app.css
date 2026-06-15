@@ -1,0 +1,411 @@
+/* app.css — layout and behavior; all values come from tokens.css. */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-family);
+  font-size: var(--size-small);
+  line-height: var(--leading);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 1px;
+}
+
+/* ---- screens ------------------------------------------------------ */
+
+.screen {
+  /* at least a screenful (so short content centres), but free to grow and
+     scroll when content — e.g. a long list of scores — exceeds the viewport */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--space) * 1.5);
+  padding: calc(var(--space) * 2) var(--space);
+  text-align: center;
+  animation: fade-in var(--fade) ease both;
+  /* above the field; transparent so the field's lighting shows through */
+  position: relative;
+  z-index: 1;
+}
+
+/* the app-wide field — background lighting behind every screen */
+.field {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  display: block;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.wordmark {
+  font-size: var(--size-small);
+  letter-spacing: var(--tracking-wide);
+  text-transform: lowercase;
+  color: var(--ink-dim);
+}
+
+.question,
+.sentence {
+  font-size: var(--size-large);
+  max-width: 26em;
+  text-wrap: balance;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space) * 0.5);
+}
+
+.option {
+  font-size: var(--size-large);
+  color: var(--ink-dim);
+  padding: 0.2em 0.6em;
+  transition: color var(--fade);
+}
+
+.option:hover,
+.option[aria-checked='true'] {
+  color: var(--ink);
+}
+
+/* intention options carry a small subtitle — the occasion they're for */
+.option-with-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  line-height: 1.3;
+  padding: 0.45em 0.6em;
+}
+
+.option-subtitle {
+  font-size: var(--size-small);
+  color: var(--ink-dim);
+  letter-spacing: 0.01em;
+}
+
+.option-with-sub:hover .option-subtitle,
+.option-with-sub[aria-checked='true'] .option-subtitle {
+  color: var(--accent);
+}
+
+.option-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space);
+  justify-content: center;
+  align-items: baseline;
+}
+
+/* the entry call-to-action — the one thing the eye should land on. Same
+   bordered affordance as the threshold's Begin, so "this starts something"
+   reads consistently. */
+.cta {
+  font-size: var(--size-large);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  padding: 0.95em 3.2em;
+  transition: border-color var(--fade), color var(--fade);
+}
+
+.cta:hover {
+  border-color: var(--accent);
+}
+
+/* secondary entries — quiet, stacked, lowercase, set apart so they never
+   compete with Begin */
+.entry-secondary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--space) * 0.6);
+  margin-top: calc(var(--space) * 1.5);
+  text-transform: lowercase;
+}
+
+.quiet-link {
+  font-size: var(--size-small);
+  color: var(--ink-dim);
+  letter-spacing: 0.04em;
+  transition: color var(--fade);
+}
+
+.quiet-link:hover {
+  color: var(--accent);
+}
+
+.small-note {
+  font-size: var(--size-small);
+  color: var(--ink-dim);
+}
+
+.about-text {
+  font-size: var(--size-small);
+  line-height: var(--leading);
+  max-width: 34em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* ---- threshold ----------------------------------------------------- */
+
+.begin {
+  font-size: var(--size-small);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  padding: 0.8em 2.4em;
+  border-radius: 2px;
+  opacity: 0;
+  animation: fade-in var(--begin-fade) ease 600ms both;
+  transition: border-color var(--fade);
+}
+
+.begin:hover {
+  border-color: var(--accent);
+}
+
+/* ---- performing ----------------------------------------------------- */
+
+/* no background here: the field shows through and recedes (ceiling ~0.4)
+   while the ring carries the piece */
+
+.intention-line {
+  font-size: var(--size-small);
+  color: var(--ink-dim);
+  max-width: 30em;
+}
+
+/* The breath: a hollow ring (Part 1, v1 verbatim) over a canvas interior
+   (Part 2). Both occupy the same grid cell so the ring breathes around a
+   stable weather. Purely atmospheric — aria-hidden, no pointer events. */
+.breath-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--breath-size);
+  height: var(--breath-size);
+  pointer-events: none;
+}
+
+.breath-wrap > * {
+  grid-area: 1 / 1; /* stack ring and interior in one cell */
+}
+
+.breath-interior {
+  width: var(--breath-size);
+  height: var(--breath-size);
+  pointer-events: none;
+}
+
+.breath {
+  width: var(--breath-size);
+  height: var(--breath-size);
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  opacity: 0.22; /* the value used when frozen */
+  animation: breathe var(--breath-period, 8s) ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(0.92);
+    opacity: 0.16;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.32;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .breath {
+    animation: none;
+    opacity: 0.22;
+    transform: scale(1);
+  }
+}
+
+/* a quiet clock for the container the listener set — glanceable, not a
+   focal point; sits clear of the centred ring */
+.session-timer {
+  position: absolute;
+  top: calc(var(--space) * 2);
+  font-size: var(--size-small);
+  letter-spacing: var(--tracking-wide);
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.controls {
+  position: absolute;
+  bottom: calc(var(--space) * 2);
+  display: flex;
+  gap: calc(var(--space) * 2);
+  transition: opacity calc(var(--fade) * 2);
+}
+
+.controls.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- code entry ----------------------------------------------------- */
+
+.code-input {
+  font-family: var(--font-family);
+  font-size: var(--size-large);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  text-align: center;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+  padding: 0.4em 0.2em;
+  width: min(86vw, 16em);
+}
+
+.code-input::placeholder {
+  color: var(--ink-dim);
+  opacity: 0.5;
+}
+
+/* ---- card ----------------------------------------------------------- */
+
+.card {
+  background: var(--card-paper);
+  color: var(--card-ink);
+  width: min(86vw, 30rem);
+  padding: calc(var(--space) * 2) calc(var(--space) * 1.75);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+  text-align: center;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 50px rgba(0, 0, 0, 0.5);
+}
+
+.card .sentence {
+  font-size: 1.15rem;
+  color: var(--card-ink);
+}
+
+.card-rule {
+  width: 3.5rem;
+  height: 1px;
+  background: var(--card-ink);
+  opacity: 0.25;
+  margin: 0 auto;
+}
+
+.card-code {
+  letter-spacing: var(--tracking-wide);
+  font-size: var(--size-large);
+}
+
+.card-meta {
+  font-size: var(--size-small);
+  color: var(--card-dim);
+}
+
+.card-word {
+  font-family: var(--font-family);
+  font-size: var(--size-small);
+  text-align: center;
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(28, 28, 30, 0.2);
+  color: var(--card-ink);
+  padding: 0.3em;
+  width: 12em;
+  margin: 0 auto;
+}
+
+.card-word::placeholder {
+  color: var(--card-dim);
+  opacity: 0.7;
+}
+
+.card-actions {
+  display: flex;
+  gap: calc(var(--space) * 2);
+  justify-content: center;
+}
+
+/* ---- scores --------------------------------------------------------- */
+
+.scores-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--space) * 0.75);
+}
+
+.journal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+  max-width: 34rem;
+  width: 100%;
+}
+
+.journal-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: var(--space) 0;
+  border-bottom: 1px solid var(--hairline);
+  text-align: center;
+}
+
+.journal-code {
+  letter-spacing: var(--tracking-wide);
+}
+
+.journal-word {
+  color: var(--ink-dim);
+  font-style: italic;
+}

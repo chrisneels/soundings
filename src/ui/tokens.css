@@ -1,0 +1,56 @@
+/*
+ * tokens.css — every visual decision, in one place.
+ *
+ * One typeface family, two sizes, generous space. To swap the face of the
+ * whole instrument (screens and card alike), change --font-family and
+ * nothing else. The card reads --font-family at render time, so it
+ * follows automatically.
+ */
+
+:root {
+  /* type */
+  --font-family: 'Iowan Old Style', 'Palatino', Georgia, serif;
+  --size-large: 1.35rem; /* the sentence, the questions, the code on the card */
+  --size-small: 0.85rem; /* everything else */
+  --leading: 1.65;
+  --tracking-wide: 0.14em; /* score codes, the wordmark */
+
+  /* color — dark, near-monochrome, one muted accent */
+  --bg: #101013;
+  --ink: #c9c7c0;
+  --ink-dim: #6e6d68;
+  --accent: #8a93a0; /* muted slate — links, focus, the breathing circle */
+  --hairline: #26262a;
+
+  /* the card is the one printed object in the system */
+  --card-paper: #efede6;
+  --card-ink: #1c1c1e;
+  --card-dim: #6b6a64;
+
+  /* space & motion */
+  --space: 1.5rem;
+  --fade: 500ms; /* intake screens: 400–600ms, unhurried */
+  --begin-fade: 1500ms; /* the Begin button beneath the sentence */
+
+  /* the breathing ring (Part 1). Size is style and lives here; the period
+     is behaviour and is set from React per intention (VISUALS.breathPeriodS),
+     falling back to this default so the keyframes stay purely in CSS. */
+  --breath-size: 8.5rem;
+  --breath-period: 8s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fade: 1ms;
+    --begin-fade: 1ms;
+  }
+}
+
+/* phones: tighten spacing and the large size so screens fit without crowding */
+@media (max-width: 480px) {
+  :root {
+    --space: 1.1rem;
+    --size-large: 1.2rem;
+    --breath-size: 7rem;
+  }
+}
