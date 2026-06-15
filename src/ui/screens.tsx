@@ -66,10 +66,10 @@ export function EntryScreen(props: {
       </button>
       <div className="entry-secondary">
         <button className="quiet-link" onClick={props.onAbout}>
-          About
+          about
         </button>
         <button className="quiet-link" onClick={props.onScores}>
-          Perform previous score
+          perform previous score
         </button>
       </div>
     </div>

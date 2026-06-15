@@ -116,7 +116,6 @@ export default function App() {
             score={phase.score}
             perf={perfRef.current}
             closing={false}
-            onMoreSpace={() => perfRef.current?.moreSpace()}
             onClose={() => perfRef.current?.close()}
           />
         );
@@ -126,7 +125,6 @@ export default function App() {
             score={phase.score}
             perf={perfRef.current}
             closing
-            onMoreSpace={() => undefined}
             onClose={() => undefined}
           />
         );

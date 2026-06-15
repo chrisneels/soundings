@@ -67,7 +67,6 @@ export function PerformingScreen(props: {
   score: Score;
   perf: Performance | null;
   closing: boolean;
-  onMoreSpace: () => void;
   onClose: () => void;
 }) {
   // The breath period is behaviour (per intention) → CSS custom property;
@@ -84,9 +83,6 @@ export function PerformingScreen(props: {
       </div>
       <p className="intention-line">{intentionLineFor(props.score)}</p>
       <div className={`controls${props.closing ? ' hidden' : ''}`}>
-        <button className="quiet-link" onClick={props.onMoreSpace}>
-          More space
-        </button>
         <button className="quiet-link" onClick={props.onClose}>
           Close
         </button>
